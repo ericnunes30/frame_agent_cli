@@ -1,0 +1,47 @@
+{
+  "name": "frame-agent-cli",
+  "version": "1.0.0",
+  "description": "CLI para interagir com agentes de IA usando o SDK @ericnunes/frame_agent",
+  "main": "dist/index.js",
+  "bin": {
+    "frame-agent": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && cp src/system_prompt.md dist/",
+    "dev": "ts-node src/index.ts",
+    "dev:watch": "ts-node-dev --respawn src/index.ts",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [
+    "cli",
+    "agent",
+    "ai",
+    "framework"
+  ],
+  "author": "Eric Nunes",
+  "license": "MIT",
+  "dependencies": {
+    "@ericnunes/frame_agent": "file:../frame_agent",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
+    "dotenv": "^17.2.2",
+    "glob": "^11.0.3",
+    "inquirer": "^12.9.6",
+    "ora": "^9.0.0",
+    "valibot": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.5.2",
+    "jest": "^30.1.3",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
