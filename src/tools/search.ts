@@ -2,6 +2,7 @@ import { Tool } from '@ericnunes/frame_agent';
 import * as v from 'valibot';
 import { glob } from 'glob';
 import * as fs from 'fs';
+import { log, errorLog } from '../utils/config-loader';
 
 export const searchTool: Tool = {
   name: 'search',
@@ -49,13 +50,13 @@ export const searchTool: Tool = {
       }
       
       // Mostrar resultado bruto da tool
-      console.log('=== TOOL RESULT ===');
-      console.log('Search tool result:', JSON.stringify(results, null, 2));
-      console.log('===================');
+      log('=== TOOL RESULT ===');
+      log('Search tool result:', JSON.stringify(results, null, 2));
+      log('===================');
       
       return JSON.stringify(results);
     } catch (error) {
-      console.error('Erro na busca:', error);
+      errorLog('Erro na busca:', error);
       return JSON.stringify({ error: 'Falha ao executar a busca' });
     }
   },

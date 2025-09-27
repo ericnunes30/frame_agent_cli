@@ -1,6 +1,7 @@
 import { Tool } from '@ericnunes/frame_agent';
 import * as v from 'valibot';
 import * as fs from 'fs';
+import { log, errorLog } from '../utils/config-loader';
 
 export const fileEditTool: Tool = {
   name: 'file_edit',
@@ -12,16 +13,16 @@ export const fileEditTool: Tool = {
   execute: async (params: { filePath: string; content: string }) => {
     try {
       // Mostrar informações de debug
-      console.log('=== TOOL EXECUTION ===');
-      console.log('Tool: file_edit');
-      console.log('File path:', params.filePath);
-      console.log('Content:', params.content);
-      console.log('====================');
+      log('=== TOOL EXECUTION ===');
+      log('Tool: file_edit');
+      log('File path:', params.filePath);
+      log('Content:', params.content);
+      log('====================');
       
       if (!fs.existsSync(params.filePath)) {
-        console.error('=== TOOL ERROR ===');
-        console.error('File not found:', params.filePath);
-        console.error('==================');
+        errorLog('=== TOOL ERROR ===');
+        errorLog('File not found:', params.filePath);
+        errorLog('==================');
         return `Arquivo não encontrado: ${params.filePath}`;
       }
       
@@ -29,15 +30,15 @@ export const fileEditTool: Tool = {
       fs.writeFileSync(params.filePath, params.content);
       
       // Mostrar resultado bruto da tool
-      console.log('=== TOOL RESULT ===');
-      console.log('File edited successfully:', params.filePath);
-      console.log('==================');
+      log('=== TOOL RESULT ===');
+      log('File edited successfully:', params.filePath);
+      log('==================');
       
       return `Arquivo editado com sucesso: ${params.filePath}`;
     } catch (error: any) {
-      console.error('=== TOOL ERROR ===');
-      console.error('Error editing file:', error.message);
-      console.error('==================');
+      errorLog('=== TOOL ERROR ===');
+      errorLog('Error editing file:', error.message);
+      errorLog('==================');
       return `Erro ao editar arquivo: ${error.message}`;
     }
   },

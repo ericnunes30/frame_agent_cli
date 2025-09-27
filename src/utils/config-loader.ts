@@ -6,11 +6,41 @@ import * as fs from 'fs';
 // Carregar variáveis de ambiente
 dotenv.config();
 
-// Criar uma função de logging condicional com base na variável de ambiente DEBUG
+// Criar uma função de logging condicional com base na variável de ambiente DEBUG ou ENABLE_LOGGING
 // Esta função é específica para o agent CLI
 export const debugLog = (...args: any[]) => {
-  if (process.env.DEBUG === 'true') {
+  if (process.env['DEBUG'] === 'true' || process.env['ENABLE_LOGGING'] === 'true') {
     console.log('[DEBUG]', ...args);
+  }
+};
+
+// Função de logging geral que pode ser desativada com ENABLE_LOGGING=false
+export const log = (...args: any[]) => {
+  // Se ENABLE_LOGGING não estiver definido ou for true, mostrar logs
+  // Se ENABLE_LOGGING for false, não mostrar logs
+  const enableLogging = process.env['ENABLE_LOGGING'] !== 'false';
+  if (enableLogging) {
+    console.log(...args);
+  }
+};
+
+// Função de logging de erro que pode ser desativada com ENABLE_LOGGING=false
+export const errorLog = (...args: any[]) => {
+  // Se ENABLE_LOGGING não estiver definido ou for true, mostrar erros
+  // Se ENABLE_LOGGING for false, não mostrar erros
+  const enableLogging = process.env['ENABLE_LOGGING'] !== 'false';
+  if (enableLogging) {
+    console.error(...args);
+  }
+};
+
+// Função de logging de aviso que pode ser desativada com ENABLE_LOGGING=false
+export const warnLog = (...args: any[]) => {
+  // Se ENABLE_LOGGING não estiver definido ou for true, mostrar avisos
+  // Se ENABLE_LOGGING for false, não mostrar avisos
+  const enableLogging = process.env['ENABLE_LOGGING'] !== 'false';
+  if (enableLogging) {
+    console.warn(...args);
   }
 };
 
@@ -51,7 +81,7 @@ export async function loadConfig(): Promise<AgentConfig> {
     instructions: defaultInstructions,
     provider: (process.env['DEFAULT_PROVIDER'] as any) || 'openai-generic', // provider configurável
     temperature: 0.7,
-    maxTokens: 1000,
+    maxTokens: 4096,
   };
 
   // Sobrescrever com variáveis de ambiente

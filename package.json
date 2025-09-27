@@ -1,15 +1,23 @@
 {
-  "name": "frame-agent-cli",
-  "version": "1.0.0",
+  "name": "@ericnunes/frame-agent-cli",
+  "version": "1.0.4",
   "description": "CLI para interagir com agentes de IA usando o SDK @ericnunes/frame_agent",
   "main": "dist/index.js",
   "bin": {
     "frame-agent": "dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ericnunes/frame_agent_cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ericnunes/frame_agent_cli/issues"
+  },
+  "homepage": "https://github.com/ericnunes/frame_agent_cli#readme",
   "scripts": {
     "build": "tsc && cp src/system_prompt.md dist/",
-    "dev": "ts-node src/index.ts",
-    "dev:watch": "ts-node-dev --respawn src/index.ts",
+    "dev": "npx ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
+    "dev:watch": "npx ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
     "start": "node dist/index.js",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -27,9 +35,11 @@
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "dotenv": "^17.2.2",
+    "express": "^5.1.0",
     "glob": "^11.0.3",
     "inquirer": "^12.9.6",
     "ora": "^9.0.0",
+    "pg": "^8.16.3",
     "valibot": "^1.1.0"
   },
   "devDependencies": {
@@ -39,9 +49,16 @@
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "types": "./dist/index.d.ts"
 }

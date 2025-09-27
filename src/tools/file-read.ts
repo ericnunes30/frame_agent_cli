@@ -1,6 +1,7 @@
 import { Tool } from '@ericnunes/frame_agent';
 import * as v from 'valibot';
 import * as fs from 'fs';
+import { log, errorLog } from '../utils/config-loader';
 
 export const fileReadTool: Tool = {
   name: 'file_read',
@@ -11,15 +12,15 @@ export const fileReadTool: Tool = {
   execute: async (params: { filePath: string }) => {
     try {
       // Mostrar informações de debug
-      console.log('=== TOOL EXECUTION ===');
-      console.log('Tool: file_read');
-      console.log('File path:', params.filePath);
-      console.log('====================');
+      log('=== TOOL EXECUTION ===');
+      log('Tool: file_read');
+      log('File path:', params.filePath);
+      log('====================');
       
       if (!fs.existsSync(params.filePath)) {
-        console.error('=== TOOL ERROR ===');
-        console.error('File not found:', params.filePath);
-        console.error('==================');
+        errorLog('=== TOOL ERROR ===');
+        errorLog('File not found:', params.filePath);
+        errorLog('==================');
         return `Arquivo não encontrado: ${params.filePath}`;
       }
       
@@ -27,15 +28,15 @@ export const fileReadTool: Tool = {
       const content = fs.readFileSync(params.filePath, 'utf-8');
       
       // Mostrar resultado bruto da tool
-      console.log('=== TOOL RESULT ===');
-      console.log('File content:', content);
-      console.log('==================');
+      log('=== TOOL RESULT ===');
+      log('File content:', content);
+      log('==================');
       
       return content;
     } catch (error: any) {
-      console.error('=== TOOL ERROR ===');
-      console.error('Error reading file:', error.message);
-      console.error('==================');
+      errorLog('=== TOOL ERROR ===');
+      errorLog('Error reading file:', error.message);
+      errorLog('==================');
       return `Erro ao ler arquivo: ${error.message}`;
     }
   },

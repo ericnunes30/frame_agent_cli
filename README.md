@@ -4,6 +4,20 @@ Interface de linha de comando para o SDK `@ericnunes/frame_agent` que permite in
 
 ## Instalação
 
+Para instalar o CLI globalmente, execute:
+
+```bash
+npm install -g frame-agent-cli
+```
+
+ou usando yarn:
+
+```bash
+yarn global add frame-agent-cli
+```
+
+## Instalação
+
 ```bash
 npm install -g frame-agent-cli
 ```
@@ -94,6 +108,22 @@ Exemplo de `.frame-agent-config.json`:
   "temperature": 0.7,
   "maxTokens": 1000
 }
+```
+
+### Controle de Logs
+
+Você pode controlar a exibição de logs através da variável de ambiente `ENABLE_LOGGING`:
+
+- `ENABLE_LOGGING=true` (padrão): Mostra todos os logs
+- `ENABLE_LOGGING=false`: Desativa todos os logs
+
+Exemplo:
+```bash
+# Desativar logs
+ENABLE_LOGGING=false frame-agent chat
+
+# Ativar logs (padrão)
+ENABLE_LOGGING=true frame-agent chat
 ```
 
 ## Desenvolvimento

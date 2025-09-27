@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ChatAgent } from '@ericnunes/frame_agent';
-import { loadConfig } from '../utils/config-loader';
+import { loadConfig, log, errorLog } from '../utils/config-loader';
 import { searchTool, fileCreateTool, fileEditTool, fileReadTool, terminalTool } from '../tools';
 
 export const planningCommand = new Command('plan')
@@ -29,10 +29,10 @@ export const planningCommand = new Command('plan')
     if (options.task) {
       // Enviar tarefa específica
       const response = await agent.sendMessage(options.task);
-      console.log(response);
+      log(response);
     } else {
       // Iniciar modo interativo
-      console.log('Modo Planning interativo. Digite "exit" para sair.');
+      log('Modo Planning interativo. Digite "exit" para sair.');
       
       // Implementar REPL
       const readline = require('readline');
@@ -44,16 +44,16 @@ export const planningCommand = new Command('plan')
       const askQuestion = () => {
         rl.question('> ', async (input: string) => {
           if (input.toLowerCase() === 'exit') {
-            console.log('Saindo do modo Planning...');
+            log('Saindo do modo Planning...');
             rl.close();
             return;
           }
           
           try {
             const response = await agent.sendMessage(input);
-            console.log(response);
+            log(response);
           } catch (error) {
-            console.error('Erro ao enviar tarefa:', error);
+            errorLog('Erro ao enviar tarefa:', error);
           }
           
           askQuestion();

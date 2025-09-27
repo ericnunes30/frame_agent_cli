@@ -1,9 +1,10 @@
 import { Command } from 'commander';
+import { log } from '../utils/config-loader';
 
 export const toolsCommand = new Command('tools')
   .description('Gerenciar tools do agente')
   .action(() => {
-    console.log('Comandos de tools disponíveis');
+    log('Comandos de tools disponíveis');
     // Implementação será adicionada posteriormente
   });
 
@@ -13,7 +14,7 @@ toolsCommand
   .description('Registrar uma tool')
   .option('-f, --file <file>', 'Arquivo da tool')
   .action((options) => {
-    console.log('Registrando tool:', options.file);
+    log('Registrando tool:', options.file);
     // Implementação será adicionada posteriormente
   });
 
@@ -22,7 +23,7 @@ toolsCommand
   .command('list')
   .description('Listar tools registradas')
   .action(() => {
-    console.log('Listando tools registradas...');
+    log('Listando tools registradas...');
     // Implementação será adicionada posteriormente
   });
 
@@ -32,6 +33,6 @@ toolsCommand
   .description('Remover tool')
   .option('-n, --name <name>', 'Nome da tool')
   .action((options) => {
-    console.log('Removendo tool:', options.name);
+    log('Removendo tool:', options.name);
     // Implementação será adicionada posteriormente
   });

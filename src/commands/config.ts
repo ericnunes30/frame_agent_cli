@@ -1,9 +1,10 @@
 import { Command } from 'commander';
+import { log } from '../utils/config-loader';
 
 export const configCommand = new Command('config')
   .description('Gerenciar configurações do CLI')
   .action(() => {
-    console.log('Configuração atual:');
+    log('Configuração atual:');
     // Implementação será adicionada posteriormente
   });
 
@@ -13,7 +14,7 @@ configCommand
   .description('Definir configuração')
   .option('-t, --temperature <number>', 'Definir temperatura')
   .action((options) => {
-    console.log('Definindo configurações:', options);
+    log('Definindo configurações:', options);
     // Implementação será adicionada posteriormente
   });
 
@@ -22,6 +23,6 @@ configCommand
   .command('reset')
   .description('Resetar configuração')
   .action(() => {
-    console.log('Resetando configuração...');
+    log('Resetando configuração...');
     // Implementação será adicionada posteriormente
   });

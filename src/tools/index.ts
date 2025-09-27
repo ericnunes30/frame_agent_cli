@@ -4,3 +4,4 @@ export { fileCreateTool } from './file-create';
 export { fileEditTool } from './file-edit';
 export { fileReadTool } from './file-read';
 export { terminalTool } from './terminal';
+export { finalAnswerTool } from './final-answer';
