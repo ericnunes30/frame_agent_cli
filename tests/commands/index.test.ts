@@ -1,4 +1,4 @@
-import * as commands from '../../src/commands/index';
+import * as commands from '../../src/core/index';
 
 describe('commands/index', () => {
   it('should export all command modules', () => {

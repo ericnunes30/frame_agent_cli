@@ -1,9 +1,9 @@
 import { Command } from 'commander';
-import { chatCommand } from './commands/chat';
-import { reactCommand } from './commands/react';
-import { planningCommand } from './commands/planning';
-import { configCommand } from './commands/config';
-import { toolsCommand } from './commands/tools';
+import { chatCommand } from './core/chat';
+import { reactCommand } from './core/react';
+import { planningCommand } from './core/planning';
+import { configCommand } from './core/config';
+import { toolsCommand } from './core/tools';
 
 export const program = new Command();
 

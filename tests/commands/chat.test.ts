@@ -3,7 +3,7 @@ jest.mock('@ericnunes/frame_agent');
 jest.mock('../../src/utils/config-loader');
 
 // Import the chat command after mocks are set up
-import { chatCommand } from '../../src/commands/chat';
+import { chatCommand } from '../../src/core/chat';
 
 describe('chatCommand', () => {
   let mockLoadConfig: jest.Mock;

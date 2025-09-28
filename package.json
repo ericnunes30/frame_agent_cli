@@ -1,6 +1,6 @@
 {
   "name": "@ericnunes/frame-agent-cli",
-  "version": "1.0.4",
+  "version": "1.1.2",
   "description": "CLI para interagir com agentes de IA usando o SDK @ericnunes/frame_agent",
   "main": "dist/index.js",
   "bin": {
@@ -31,7 +31,7 @@
   "author": "Eric Nunes",
   "license": "MIT",
   "dependencies": {
-    "@ericnunes/frame_agent": "file:../frame_agent",
+    "@ericnunes/frame_agent": "^1.1.4",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "dotenv": "^17.2.2",
