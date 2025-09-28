@@ -3,7 +3,7 @@ jest.mock('@ericnunes/frame_agent');
 jest.mock('../../src/utils/config-loader');
 
 // Import the planning command after mocks are set up
-import { planningCommand } from '../../src/commands/planning';
+import { planningCommand } from '../../src/core/planning';
 
 describe('planningCommand', () => {
   let mockLoadConfig: jest.Mock;

@@ -3,7 +3,7 @@ jest.mock('@ericnunes/frame_agent');
 jest.mock('../../src/utils/config-loader');
 
 // Import the react command after mocks are set up
-import { reactCommand } from '../../src/commands/react';
+import { reactCommand } from '../../src/core/react';
 
 describe('reactCommand', () => {
   let mockLoadConfig: jest.Mock;

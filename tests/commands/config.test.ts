@@ -1,5 +1,5 @@
 // Import the config command
-import { configCommand } from '../../src/commands/config';
+import { configCommand } from '../../src/core/config';
 
 describe('configCommand', () => {
   let consoleLogSpy: jest.SpyInstance;

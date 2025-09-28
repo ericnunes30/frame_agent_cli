@@ -1,5 +1,5 @@
 // Import the tools command
-import { toolsCommand } from '../../src/commands/tools';
+import { toolsCommand } from '../../src/core/tools';
 
 describe('toolsCommand', () => {
   let consoleLogSpy: jest.SpyInstance;

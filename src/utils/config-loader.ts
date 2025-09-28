@@ -9,7 +9,7 @@ dotenv.config();
 // Criar uma função de logging condicional com base na variável de ambiente DEBUG ou ENABLE_LOGGING
 // Esta função é específica para o agent CLI
 export const debugLog = (...args: any[]) => {
-  if (process.env['DEBUG'] === 'true' || process.env['ENABLE_LOGGING'] === 'true') {
+  if (process.env['DEBUG'] === 'true' || process.env['ENABLE_LOGGING'] === 'true' || process.env['ENABLE_DEBUG'] === 'true') {
     console.log('[DEBUG]', ...args);
   }
 };
