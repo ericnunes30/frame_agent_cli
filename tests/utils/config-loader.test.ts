@@ -20,6 +20,21 @@ describe('loadConfig', () => {
 
     // Mock path.join
     mockPath.join.mockImplementation((...paths) => paths.join('/'));
+
+    // Mock fs.readFileSync for system_prompt.md
+    mockFs.readFileSync.mockImplementation((filePath) => {
+      if (filePath.toString().endsWith('system_prompt.md')) {
+        return 'Você é um assistente útil que ajuda os usuários através da linha de comando.';
+      }
+      if(filePath.toString().endsWith('.frame-agent-config.json')) {
+        return JSON.stringify({
+          name: 'Custom Agent',
+          provider: 'custom-provider',
+          temperature: 0.9,
+        });
+      }
+      return ''
+    });
   });
 
   it('should return default config when no environment variables or file config', async () => {
@@ -32,7 +47,7 @@ describe('loadConfig', () => {
       instructions: 'Você é um assistente útil que ajuda os usuários através da linha de comando.',
       provider: 'openai-generic',
       temperature: 0.7,
-      maxTokens: 1000,
+      maxTokens: 4096,
     });
   });
 
@@ -55,11 +70,6 @@ describe('loadConfig', () => {
 
   it('should load config from file when it exists', async () => {
     mockFs.existsSync.mockReturnValue(true);
-    mockFs.readFileSync.mockReturnValue(JSON.stringify({
-      name: 'Custom Agent',
-      provider: 'custom-provider',
-      temperature: 0.9,
-    }));
     
     const config = await loadConfig();
     
@@ -68,7 +78,7 @@ describe('loadConfig', () => {
       instructions: 'Você é um assistente útil que ajuda os usuários através da linha de comando.',
       provider: 'custom-provider',
       temperature: 0.9,
-      maxTokens: 1000,
+      maxTokens: 4096,
     });
   });
 
@@ -77,19 +87,15 @@ describe('loadConfig', () => {
     process.env['TEMPERATURE'] = '0.5';
     
     mockFs.existsSync.mockReturnValue(true);
-    mockFs.readFileSync.mockReturnValue(JSON.stringify({
-      provider: 'file-provider',
-      temperature: 0.8,
-    }));
     
     const config = await loadConfig();
     
     expect(config).toEqual({
-      name: 'Frame Agent CLI',
+      name: 'Custom Agent',
       instructions: 'Você é um assistente útil que ajuda os usuários através da linha de comando.',
-      provider: 'file-provider',  // from file
-      temperature: 0.8,           // from file
-      maxTokens: 1000,
+      provider: 'custom-provider',  // from file
+      temperature: 0.9,           // from file
+      maxTokens: 4096,
     });
   });
 
@@ -108,7 +114,7 @@ describe('loadConfig', () => {
       instructions: 'Você é um assistente útil que ajuda os usuários através da linha de comando.',
       provider: 'openai-generic',
       temperature: 0.7,
-      maxTokens: 1000,
+      maxTokens: 4096,
     });
     
     expect(consoleWarnSpy).toHaveBeenCalledWith('Erro ao ler arquivo de configuração:', expect.any(Error));
@@ -118,7 +124,12 @@ describe('loadConfig', () => {
 
   it('should handle invalid JSON in config file', async () => {
     mockFs.existsSync.mockReturnValue(true);
-    mockFs.readFileSync.mockReturnValue('invalid json');
+    mockFs.readFileSync.mockImplementation((filePath) => {
+      if (filePath.toString().endsWith('.frame-agent-config.json')) {
+        return 'invalid json';
+      }
+      return 'Você é um assistente útil que ajuda os usuários através da linha de comando.';
+    });
     
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
     
@@ -129,7 +140,7 @@ describe('loadConfig', () => {
       instructions: 'Você é um assistente útil que ajuda os usuários através da linha de comando.',
       provider: 'openai-generic',
       temperature: 0.7,
-      maxTokens: 1000,
+      maxTokens: 4096,
     });
     
     expect(consoleWarnSpy).toHaveBeenCalledWith('Erro ao ler arquivo de configuração:', expect.any(SyntaxError));

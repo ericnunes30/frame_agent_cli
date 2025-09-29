@@ -9,6 +9,7 @@ export const chatCommand = new Command('chat')
   .option('-i, --instructions <instructions>', 'Definir instruções do sistema')
   .option('--show-state', 'Mostrar estado híbrido atual (chat/react)', false)
   .action(async (options) => {
+    console.log('Action handler executed');
     const config = await loadConfig();
     
     // Criar agente interativo

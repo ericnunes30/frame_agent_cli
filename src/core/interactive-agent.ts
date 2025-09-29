@@ -60,6 +60,13 @@ export class InteractiveAgent {
       log(`[Estado híbrido: ${this.agent.getHybridState()}]`);
     }
     
+    // Verificar se a resposta já foi exibida pelo AdaptiveExecutor
+    if (process.env.RESPONSE_ALREADY_DISPLAYED === 'true') {
+      // Resetar a flag e não retornar a resposta duplicada
+      delete process.env.RESPONSE_ALREADY_DISPLAYED;
+      return response; // Still return for programmatic use but avoid duplicate display
+    }
+    
     return response;
   }
 
@@ -107,7 +114,14 @@ export class InteractiveAgent {
         try {
           // Enviar mensagem ao agente híbrido
           const response = await this.agent.sendMessage(input);
-          log(response);
+          
+          // Verificar se a resposta já foi exibida pelo AdaptiveExecutor
+          if (process.env.RESPONSE_ALREADY_DISPLAYED !== 'true') {
+            log(response);
+          } else {
+            // Resetar a flag para próximas execuções
+            delete process.env.RESPONSE_ALREADY_DISPLAYED;
+          }
           
           // Mostrar estado se solicitado
           if (this.showState) {
