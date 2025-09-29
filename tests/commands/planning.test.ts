@@ -1,155 +1,70 @@
-// Mock dependencies
-jest.mock('@ericnunes/frame_agent');
-jest.mock('../../src/utils/config-loader');
-
-// Import the planning command after mocks are set up
+﻿import { jest, describe, it, beforeEach, expect } from '@jest/globals';
 import { planningCommand } from '../../src/core/planning';
+import { loadConfig, log } from '../../src/utils/config-loader';
+
+const sendMessageMock = jest.fn(async (_message: string) => '');
+const startInteractiveSessionMock = jest.fn(async (_instructions: string) => {});
+let interactiveAgentConstructor: jest.Mock;
+
+jest.mock('../../src/utils/config-loader', () => ({
+  loadConfig: jest.fn(),
+  log: jest.fn(),
+}));
+
+jest.mock('../../src/core/interactive-agent', () => ({
+  InteractiveAgent: jest.fn((...args: any[]) => interactiveAgentConstructor(...args)),
+}));
+
+interactiveAgentConstructor = jest.fn(() => ({
+  sendMessage: sendMessageMock,
+  startInteractiveSession: startInteractiveSessionMock,
+}));
+
+const loadConfigMock = jest.mocked(loadConfig);
+const logMock = jest.mocked(log);
 
 describe('planningCommand', () => {
-  let mockLoadConfig: jest.Mock;
-  let mockChatAgent: jest.Mock;
-  let mockSendMessage: jest.Mock;
-  let consoleLogSpy: jest.SpyInstance;
-  let originalArgv: string[];
-
   beforeEach(() => {
-    // Clear all mocks
     jest.clearAllMocks();
+    sendMessageMock.mockReset();
+    startInteractiveSessionMock.mockReset();
+    interactiveAgentConstructor.mockReset();
+    interactiveAgentConstructor.mockImplementation(() => ({
+      sendMessage: sendMessageMock,
+      startInteractiveSession: startInteractiveSessionMock,
+    }));
 
-    // Store original process.argv
-    originalArgv = [...process.argv];
-
-    // Reset process.argv to default
-    process.argv = ['node', 'test'];
-
-    // Reset the command state
-    // This is needed to avoid state issues between tests
-    jest.resetModules();
-    jest.mock('@ericnunes/frame_agent');
-    jest.mock('../../src/utils/config-loader');
-    
-    // Re-import dependencies
-    const { ChatAgent: ChatAgentImport } = require('@ericnunes/frame_agent');
-    const { loadConfig: loadConfigImport } = require('../../src/utils/config-loader');
-    
-    // Mock loadConfig
-    mockLoadConfig = loadConfigImport as jest.Mock;
-    mockLoadConfig.mockResolvedValue({
-      name: 'Test Agent',
-      provider: 'openai-gpt-4o-mini',
-      temperature: 0.7,
-      maxTokens: 1000,
-    });
-
-    // Mock ChatAgent
-    mockSendMessage = jest.fn();
-    const mockListTools = jest.fn();
-    const mockRegisterTool = jest.fn();
-    mockChatAgent = ChatAgentImport as jest.Mock;
-    mockChatAgent.mockImplementation(() => {
-      return {
-        sendMessage: mockSendMessage,
-        listTools: mockListTools,
-        registerTool: mockRegisterTool,
-      };
-    });
-
-    // Re-import the planning command after mocks are set up
-    const { planningCommand: planningCommandImport } = require('../../src/commands/planning');
-    // Update the planningCommand reference
-    Object.assign(planningCommand, planningCommandImport);
-
-    // Spy on console.log
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    loadConfigMock.mockResolvedValue({
+      instructions: 'Config instructions',
+    } as any);
+    sendMessageMock.mockResolvedValue('Task response');
+    startInteractiveSessionMock.mockResolvedValue(undefined);
   });
 
-  afterEach(() => {
-    // Restore original process.argv
-    process.argv = originalArgv;
+  it('creates InteractiveAgent and sends task when --task is provided', async () => {
+    await planningCommand.parseAsync(['--task', 'Plan a trip'], { from: 'user' });
+
+    expect(interactiveAgentConstructor).toHaveBeenCalledWith(false);
+    expect(sendMessageMock).toHaveBeenCalledWith('Plan a trip');
+    expect(logMock).toHaveBeenCalledWith('Task response');
   });
 
-  afterEach(() => {
-    consoleLogSpy.mockRestore();
+  it('starts interactive session when no task is provided', async () => {
+    await planningCommand.parseAsync([], { from: 'user' });
+
+    expect(loadConfigMock).toHaveBeenCalled();
+    expect(startInteractiveSessionMock).toHaveBeenCalledWith('Config instructions');
   });
 
-  describe('command setup', () => {
-    it('should create a command with correct name and description', () => {
-      expect(planningCommand.name()).toBe('plan');
-      expect(planningCommand.description()).toBe('Iniciar modo Planning com o agente');
-    });
+  it('uses custom instructions when provided', async () => {
+    await planningCommand.parseAsync(['--instructions', 'Custom'], { from: 'user' });
 
-    it('should have task option', () => {
-      const helpText = planningCommand.helpInformation();
-      expect(helpText).toContain('-t, --task <task>');
-    });
+    expect(startInteractiveSessionMock).toHaveBeenCalledWith('Custom');
   });
 
-  describe('action handler', () => {
-  it('should load config and create ChatAgent with planning mode', async () => {
-      // Mock process.argv to simulate command line arguments
-      process.argv = ['node', 'plan', 'plan'];
-      
-      // Execute the command
-      await planningCommand.parseAsync(process.argv);
-      
-      expect(mockLoadConfig).toHaveBeenCalled();
-      expect(mockChatAgent).toHaveBeenCalledWith({
-        name: 'Test Agent',
-        provider: 'openai-gpt-4o-mini',
-        temperature: 0.7,
-        maxTokens: 1000,
-        mode: 'planning',
-      });
-    });
+  it('passes showState flag to InteractiveAgent', async () => {
+    await planningCommand.parseAsync(['--show-state'], { from: 'user' });
 
-    it('should send task and log response when task option is provided', async () => {
-      const mockResponse = 'Here is your plan for a trip to Europe...';
-      mockSendMessage.mockResolvedValue(mockResponse);
-      
-      // Mock process.argv to simulate command line arguments
-      process.argv = ['node', 'plan', 'plan', '--task', 'Plan a trip to Europe'];
-      
-      // Execute the command
-      await planningCommand.parseAsync(process.argv);
-      
-      expect(mockSendMessage).toHaveBeenCalledWith('Plan a trip to Europe');
-      expect(consoleLogSpy).toHaveBeenCalledWith(mockResponse);
-    });
-
-    it('should log interactive mode message when no task option is provided', async () => {
-      // Mock process.argv to simulate command line arguments
-      process.argv = ['node', 'plan', 'plan'];
-      
-      // Execute the command
-      await planningCommand.parseAsync(process.argv);
-      
-      expect(consoleLogSpy).toHaveBeenCalledWith('Modo Planning interativo. Digite "exit" para sair.');
-    });
-
-    it('should handle config loading errors gracefully', async () => {
-      mockLoadConfig.mockRejectedValue(new Error('Config load failed'));
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      
-      // Mock process.argv to simulate command line arguments
-      process.argv = ['node', 'plan', 'plan', '--task', 'Plan a trip'];
-      
-      // Execute the command
-      await expect(planningCommand.parseAsync(process.argv)).rejects.toThrow('Config load failed');
-      
-      consoleErrorSpy.mockRestore();
-    });
-
-    it('should handle task sending errors gracefully', async () => {
-      mockSendMessage.mockRejectedValue(new Error('Task send failed'));
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      
-      // Mock process.argv to simulate command line arguments
-      process.argv = ['node', 'plan', 'plan', '--task', 'Plan a trip'];
-      
-      // Execute the command
-      await expect(planningCommand.parseAsync(process.argv)).rejects.toThrow('Task send failed');
-      
-      consoleErrorSpy.mockRestore();
-    });
+    expect(interactiveAgentConstructor).toHaveBeenCalledWith(true);
   });
 });

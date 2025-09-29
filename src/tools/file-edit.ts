@@ -3,43 +3,34 @@ import * as v from 'valibot';
 import * as fs from 'fs';
 import { log, errorLog } from '../utils/config-loader';
 
+const TOOL_ID = '[file_edit]';
+
 export const fileEditTool: Tool = {
   name: 'file_edit',
-  description: 'Editar arquivos existentes',
+  description: 'Editar arquivos existentes (aceita "/" e "\\" em caminhos)',
   parameters: v.object({
     filePath: v.string(),
     content: v.string()
   }),
   execute: async (params: { filePath: string; content: string }) => {
     try {
-      // Mostrar informa√ß√µes de debug
-      log('=== TOOL EXECUTION ===');
-      log('Tool: file_edit');
-      log('File path:', params.filePath);
-      log('Content:', params.content);
-      log('====================');
-      
+      log(`${TOOL_ID} ? Editando arquivo`);
+      log(`${TOOL_ID} ï Caminho: ${params.filePath}`);
+
       if (!fs.existsSync(params.filePath)) {
-        errorLog('=== TOOL ERROR ===');
-        errorLog('File not found:', params.filePath);
-        errorLog('==================');
-        return `Arquivo n√£o encontrado: ${params.filePath}`;
+        const message = `Arquivo n„o encontrado: ${params.filePath} (verifique uso de "/" ou "\\")`;
+        errorLog(`${TOOL_ID} ? ${message}`);
+        return `? ${message}`;
       }
-      
-      // Editar arquivo com novo conte√∫do
+
       fs.writeFileSync(params.filePath, params.content);
-      
-      // Mostrar resultado bruto da tool
-      log('=== TOOL RESULT ===');
-      log('File edited successfully:', params.filePath);
-      log('==================');
-      
-      return `Arquivo editado com sucesso: ${params.filePath}`;
+
+      log(`${TOOL_ID} ? Arquivo atualizado`);
+      return `? Conte˙do atualizado em: ${params.filePath}`;
     } catch (error: any) {
-      errorLog('=== TOOL ERROR ===');
-      errorLog('Error editing file:', error.message);
-      errorLog('==================');
-      return `Erro ao editar arquivo: ${error.message}`;
+      const message = error?.message ?? 'motivo desconhecido';
+      errorLog(`${TOOL_ID} ? Erro ao editar arquivo (${message})`);
+      return `? Erro ao editar arquivo ${params.filePath}: ${message}`;
     }
   },
 };

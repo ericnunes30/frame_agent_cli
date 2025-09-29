@@ -3,41 +3,33 @@ import * as v from 'valibot';
 import * as fs from 'fs';
 import { log, errorLog } from '../utils/config-loader';
 
+const TOOL_ID = '[file_read]';
+
 export const fileReadTool: Tool = {
   name: 'file_read',
-  description: 'Ler conte√∫do de arquivos',
+  description: 'Ler conte˙do de arquivos (aceita "/" e "\\" em caminhos)',
   parameters: v.object({
     filePath: v.string()
   }),
   execute: async (params: { filePath: string }) => {
     try {
-      // Mostrar informa√ß√µes de debug
-      log('=== TOOL EXECUTION ===');
-      log('Tool: file_read');
-      log('File path:', params.filePath);
-      log('====================');
-      
+      log(`${TOOL_ID} ? Lendo arquivo`);
+      log(`${TOOL_ID} ï Caminho: ${params.filePath}`);
+
       if (!fs.existsSync(params.filePath)) {
-        errorLog('=== TOOL ERROR ===');
-        errorLog('File not found:', params.filePath);
-        errorLog('==================');
-        return `Arquivo n√£o encontrado: ${params.filePath}`;
+        const message = `Arquivo n„o encontrado: ${params.filePath} (verifique uso de "/" ou "\\")`;
+        errorLog(`${TOOL_ID} ? ${message}`);
+        return `? ${message}`;
       }
-      
-      // Ler conte√∫do do arquivo
+
       const content = fs.readFileSync(params.filePath, 'utf-8');
-      
-      // Mostrar resultado bruto da tool
-      log('=== TOOL RESULT ===');
-      log('File content:', content);
-      log('==================');
-      
+
+      log(`${TOOL_ID} ? Leitura concluÌda (${content.length} caractere(s))`);
       return content;
     } catch (error: any) {
-      errorLog('=== TOOL ERROR ===');
-      errorLog('Error reading file:', error.message);
-      errorLog('==================');
-      return `Erro ao ler arquivo: ${error.message}`;
+      const message = error?.message ?? 'motivo desconhecido';
+      errorLog(`${TOOL_ID} ? Erro ao ler arquivo (${message})`);
+      return `? Erro ao ler arquivo ${params.filePath}: ${message}`;
     }
   },
 };
