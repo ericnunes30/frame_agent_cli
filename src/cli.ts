@@ -10,7 +10,7 @@ export const program = new Command();
 program
   .name('frame-agent')
   .description('CLI para interagir com agentes de IA usando o SDK @ericnunes/frame_agent')
-  .version('1.0.0');
+  .version('1.1.16');
 
 // Registrar comandos
 program.addCommand(chatCommand);
