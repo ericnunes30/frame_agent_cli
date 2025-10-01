@@ -5,8 +5,7 @@ import {
   fileCreateTool, 
   fileEditTool, 
   fileReadTool, 
-  terminalTool, 
-  finalAnswerTool 
+  terminalTool
 } from '../tools';
 
 /**
@@ -46,7 +45,6 @@ export class InteractiveAgent {
     this.agent.registerTool(fileEditTool);
     this.agent.registerTool(fileReadTool);
     this.agent.registerTool(terminalTool);
-    this.agent.registerTool(finalAnswerTool);
   }
 
   /**
