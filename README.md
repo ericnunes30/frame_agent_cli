@@ -237,10 +237,12 @@ Exemplo de `.frame-agent-config.json`:
 
 ### Controle de Logs
 
-Você pode controlar a exibição de logs através da variável de ambiente `ENABLE_LOGGING`:
+Você pode controlar a exibição de logs através das variáveis de ambiente:
 
 - `ENABLE_LOGGING=true` (padrão): Mostra todos os logs
 - `ENABLE_LOGGING=false`: Desativa todos os logs
+- `ENABLE_TOOL_LOGGING=true`: Ativa logs específicos das ferramentas (padrão)
+- `ENABLE_TOOL_LOGGING=false`: Desativa logs específicos das ferramentas
 
 Exemplo:
 ```bash
@@ -249,6 +251,12 @@ ENABLE_LOGGING=false frame-agent chat
 
 # Ativar logs (padrão)
 ENABLE_LOGGING=true frame-agent chat
+
+# Desativar logs específicos das ferramentas
+ENABLE_TOOL_LOGGING=false frame-agent chat
+
+# Ativar logs específicos das ferramentas (padrão)
+ENABLE_TOOL_LOGGING=true frame-agent chat
 ```
 
 ## Desenvolvimento

@@ -1,7 +1,8 @@
 import { Tool } from '@ericnunes/frame_agent';
 import * as v from 'valibot';
 import * as fs from 'fs';
-import { log, errorLog } from '../utils/config-loader';
+import { toolLog, errorLog } from '../utils/config-loader';
+import { createError } from '../utils/error-handler';
 
 const TOOL_ID = '[file_edit]';
 
@@ -14,23 +15,23 @@ export const fileEditTool: Tool = {
   }),
   execute: async (params: { filePath: string; content: string }) => {
     try {
-      log(`${TOOL_ID} ? Editando arquivo`);
-      log(`${TOOL_ID} • Caminho: ${params.filePath}`);
+      toolLog(`${TOOL_ID} ? Editando arquivo`);
+      toolLog(`${TOOL_ID} ï¿½ Caminho: ${params.filePath}`);
 
       if (!fs.existsSync(params.filePath)) {
-        const message = `Arquivo não encontrado: ${params.filePath} (verifique uso de "/" ou "\\")`;
+        const message = `Arquivo nï¿½o encontrado: ${params.filePath} (verifique uso de "/" ou "\\")`;
         errorLog(`${TOOL_ID} ? ${message}`);
-        return `? ${message}`;
+        return createError(message, 'FILE_NOT_FOUND');
       }
 
       fs.writeFileSync(params.filePath, params.content);
 
-      log(`${TOOL_ID} ? Arquivo atualizado`);
-      return `? Conteúdo atualizado em: ${params.filePath}`;
+      toolLog(`${TOOL_ID} ? Arquivo atualizado`);
+      return { success: true, message: `? Conteï¿½do atualizado em: ${params.filePath}` };
     } catch (error: any) {
       const message = error?.message ?? 'motivo desconhecido';
       errorLog(`${TOOL_ID} ? Erro ao editar arquivo (${message})`);
-      return `? Erro ao editar arquivo ${params.filePath}: ${message}`;
+      return createError(`? Erro ao editar arquivo ${params.filePath}: ${message}`, 'FILE_EDIT_ERROR', error);
     }
   },
 };

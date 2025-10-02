@@ -44,6 +44,17 @@ export const warnLog = (...args: any[]) => {
   }
 };
 
+// Função de logging para ferramentas que pode ser configurada com ENABLE_TOOL_LOGGING
+export const toolLog = (...args: any[]) => {
+  // Se ENABLE_TOOL_LOGGING não estiver definido, usar o valor de ENABLE_LOGGING
+  // Se ENABLE_TOOL_LOGGING for true, mostrar logs das ferramentas
+  // Se ENABLE_TOOL_LOGGING for false, não mostrar logs das ferramentas
+  const enableToolLogging = process.env['ENABLE_TOOL_LOGGING'] !== 'false';
+  if (enableToolLogging) {
+    console.log(...args);
+  }
+};
+
 export async function loadConfig(): Promise<AgentConfig> {
   // Ler o system prompt do arquivo markdown
   let defaultInstructions = 'Você é um assistente útil que ajuda os usuários através da linha de comando.';
