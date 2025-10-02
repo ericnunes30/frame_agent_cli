@@ -1,6 +1,6 @@
 {
   "name": "@ericnunes/frame-agent-cli",
-  "version": "1.1.16",
+  "version": "1.1.18",
   "description": "CLI para interagir com agentes de IA usando o SDK @ericnunes/frame_agent",
   "main": "dist/index.js",
   "bin": {
